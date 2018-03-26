@@ -5,10 +5,15 @@ document.body.appendChild(app.view);
 
 var shipsize = 15;
 
-function render(){
+function start(){
   var ship = new Ship(0,app.view.width/2,app.view.height/2,0,0);
-  ship.rotate(6)
-  // ship.move(100,-100);
+  app.ticker.add(delta => render(ship));
+}
+
+function render(ship){
+  resetStage()
+  // ship.rotate(0.01)
+  ship.move(0,-1);
   ship.draw()
 }
 
@@ -30,6 +35,12 @@ function drawTriangle(x,y){
     triangle.lineTo(x+shipsize, y+shipsize);
     
     app.stage.addChild(triangle);
+}
+
+function resetStage(){
+  app.stage.children.forEach(function blah(child) {
+    app.stage.removeChild(child);
+  });
 }
 
 
@@ -61,12 +72,19 @@ class Ship {
   };
 
   rotate(degrees){
+    this.angle += degrees;
     this.move(-this.centerx, -this.centery)
-    this.matrix.rotate(degrees)
+    this.matrix.rotate(this.angle)
     this.move(this.centerx, this.centery)
   }
 
   move(x,y){
+    this.matrix.a += x;
+    this.matrix.b += y;
+    this.matrix.c += x;
+    this.matrix.d += y;
+    this.matrix.tx += x;
+    this.matrix.ty += y;
     this.matrix.set(this.matrix.a+x,this.matrix.b+y,this.matrix.c+x,this.matrix.d+y,this.matrix.tx+x, this.matrix.ty+y)
   }
 }
